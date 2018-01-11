@@ -83,7 +83,8 @@ ecm_setup_version(${KF5_VERSION}
     PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5Kirigami2ConfigVersion.cmake"
     SOVERSION 5)
 
-find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE COMPONENTS Core Quick Test Gui Svg QuickControls2)
+#FIXME: no dbus on Android
+find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE COMPONENTS Core Quick Test Gui Svg QuickControls2 DBus)
 
 if(BUILD_EXAMPLES AND CMAKE_SYSTEM_NAME STREQUAL "Android")
 find_package(Qt5AndroidExtras ${REQUIRED_QT_VERSION} REQUIRED)

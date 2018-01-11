@@ -24,15 +24,24 @@
 #include <QSettings>
 #include <QFile>
 
+#include "libkirigami/tabletmodewatcher.h"
+
 Settings::Settings(QObject *parent)
     : QObject(parent)
 {
 #if defined(Q_OS_IOS) || defined(Q_OS_ANDROID) || defined(Q_OS_BLACKBERRY) || defined(Q_OS_QNX) || defined(Q_OS_WINRT)
     m_mobile = true;
 #else
-    m_mobile = qEnvironmentVariableIsSet("QT_QUICK_CONTROLS_MOBILE") &&
-        (QString::fromLatin1(qgetenv("QT_QUICK_CONTROLS_MOBILE")) == QStringLiteral("1") ||
+    if (qEnvironmentVariableIsSet("QT_QUICK_CONTROLS_MOBILE")) {
+    m_mobile = (QString::fromLatin1(qgetenv("QT_QUICK_CONTROLS_MOBILE")) == QStringLiteral("1") ||
          QString::fromLatin1(qgetenv("QT_QUICK_CONTROLS_MOBILE")) == QStringLiteral("true"));
+    } else {
+        m_mobile = Kirigami::TabletModeWatcher::self()->isTablet();
+        connect(Kirigami::TabletModeWatcher::self(), &Kirigami::TabletModeWatcher::tabletModeChanged,
+                this, [this](bool tabletMode) {
+                    setIsMobile(tabletMode);
+                });
+    }
 #endif
 
     const QString configPath = QStandardPaths::locate(QStandardPaths::ConfigLocation, QStringLiteral("kdeglobals"));
