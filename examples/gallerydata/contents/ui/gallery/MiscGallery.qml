@@ -176,6 +176,10 @@ ScrollablePage {
                 }
             }
         }
+        Label {
+            Layout.alignment: Qt.AlignHCenter
+            text: Settings.isMobile ? "We are in mobile device mode" : "We are in Desktop mode"
+        }
         Column {
             Layout.alignment: Qt.AlignHCenter
             Controls.ItemDelegate {

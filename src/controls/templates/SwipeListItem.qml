@@ -305,6 +305,21 @@ T2.ItemDelegate {
         }
     }
     Connections {
+        target: Settings
+        onIsMobileChanged: {
+            if (Settings.isMobile) {
+                if (!swipeFilterConnection.swipeFilterItem) {
+                    var component = Qt.createComponent(Qt.resolvedUrl("../private/SwipeItemEventFilter.qml"));
+                    listItem.ListView.view.parent.parent._swipeFilter = component.createObject(listItem.ListView.view.parent.parent);
+                }
+            } else {
+                if (listItem.ListView.view.parent.parent._swipeFilter) {
+                    listItem.ListView.view.parent.parent._swipeFilter.destroy();
+                }
+            }
+        }
+    }
+    Connections {
         id: swipeFilterConnection
         readonly property QtObject swipeFilterItem: (listItem.ListView && listItem.ListView.view && listItem.ListView.view.parent && listItem.ListView.view.parent.parent) ? listItem.ListView.view.parent.parent._swipeFilter : null
         readonly property bool enabled: swipeFilterItem ? swipeFilterItem.currentItem === listItem : false

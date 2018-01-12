@@ -61,7 +61,7 @@ Settings::~Settings()
 
 void Settings::setIsMobile(bool mobile)
 {
-    if (mobile != m_mobile) {
+    if (mobile == m_mobile) {
         return;
     }
 

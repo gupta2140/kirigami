@@ -43,14 +43,18 @@ public:
     TabletModeWatcherPrivate(TabletModeWatcher *watcher)
         : q(watcher)
     {
-        m_interface = new OrgKdeKWinTabletModeManagerInterface(QStringLiteral("org.kde.KWin.TabletModeManager"), QStringLiteral("/org/kde/KWin"), QDBusConnection::sessionBus(), q);
+        m_interface = new OrgKdeKWinTabletModeManagerInterface(QStringLiteral("org.kde.KWin"), QStringLiteral("/org/kde/KWin"), QDBusConnection::sessionBus(), q);
+
+        if (m_interface->isValid()) {
         //NOTE: the initial call is actually sync, because is better a tiny freeze than having the ui always recalculated and changed at the start
         isTabletMode = m_interface->tabletMode();
-
         QObject::connect(m_interface, &OrgKdeKWinTabletModeManagerInterface::tabletModeChanged,
                 q, [this](bool tabletMode) {
             setIsTablet(tabletMode);
         });
+        } else {
+            isTabletMode = false;
+        }
     }
     ~TabletModeWatcherPrivate() {};
     void setIsTablet(bool tablet);
@@ -73,7 +77,8 @@ void TabletModeWatcherPrivate::setIsTablet(bool tablet)
 
 
 TabletModeWatcher::TabletModeWatcher(QObject *parent)
-    : QObject(parent)
+    : QObject(parent),
+      d(new TabletModeWatcherPrivate(this))
 {
 }
 
