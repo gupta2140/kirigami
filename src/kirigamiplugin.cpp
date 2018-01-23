@@ -31,23 +31,33 @@
 #include <QQuickItem>
 #include <QQuickStyle>
 
-#ifdef KIRIGAMI_BUILD_TYPE_STATIC
 #include "libkirigami/platformtheme.h"
-#else
-#include <platformtheme.h>
-#endif
 
 static QString s_selectedStyle;
+
+//Q_INIT_RESOURCE(kirigami);
+#ifdef KIRIGAMI_BUILD_TYPE_STATIC
+#include <qrc_kirigami.cpp>
+#endif
 
 QUrl KirigamiPlugin::componentUrl(const QString &fileName) const
 {
     foreach (const QString &style, m_stylesFallbackChain) {
         const QString candidate = QStringLiteral("styles/") + style + QLatin1Char('/') + fileName;
         if (QFile::exists(resolveFilePath(candidate))) {
+#ifdef KIRIGAMI_BUILD_TYPE_STATIC
+            return QUrl(QStringLiteral("qrc:/org/kde/kirigami/styles/") + style + QLatin1Char('/') + fileName);
+#else
             return QUrl(resolveFileUrl(candidate));
+#endif
         }
     }
+
+#ifdef KIRIGAMI_BUILD_TYPE_STATIC
+            return QUrl(QStringLiteral("qrc:/org/kde/kirigami/") + fileName);
+#else
     return QUrl(resolveFileUrl(fileName));
+#endif
 }
 
 
@@ -56,28 +66,33 @@ void KirigamiPlugin::registerTypes(const char *uri)
     Q_ASSERT(uri == QLatin1String("org.kde.kirigami"));
     const QString style = QQuickStyle::name();
 
+#if !defined(Q_OS_ANDROID) && !defined(Q_OS_IOS)
     //org.kde.desktop.plasma is a couple of files that fall back to desktop by purpose
     if ((style.isEmpty() || style == QStringLiteral("org.kde.desktop.plasma")) && QFile::exists(resolveFilePath(QStringLiteral("/styles/org.kde.desktop")))) {
-#if !defined(Q_OS_ANDROID) && !defined(Q_OS_IOS)
         m_stylesFallbackChain.prepend(QStringLiteral("org.kde.desktop"));
-#elif defined(Q_OS_ANDROID)
-        m_stylesFallbackChain.prepend(QStringLiteral("Material"));
-#else // do we have an iOS specific style?
-        m_stylesFallbackChain.prepend(QStringLiteral("Material"));
-#endif
     }
+#elif defined(Q_OS_ANDROID)
+    if (!m_stylesFallbackChain.contains(QStringLiteral("Material"))) {
+        m_stylesFallbackChain.prepend(QStringLiteral("Material"));
+    }
+#else // do we have an iOS specific style?
+    if (!m_stylesFallbackChain.contains(QStringLiteral("Material"))) {
+        m_stylesFallbackChain.prepend(QStringLiteral("Material"));
+    }
+#endif
 
-    if (!style.isEmpty() && QFile::exists(resolveFilePath(QStringLiteral("/styles/") + style))) {
+    if (!style.isEmpty() && QFile::exists(resolveFilePath(QStringLiteral("/styles/") + style)) && !m_stylesFallbackChain.contains(style)) {
         m_stylesFallbackChain.prepend(style);
         //if we have plasma deps installed, use them for extra integration
         if (style == QStringLiteral("org.kde.desktop") && QFile::exists(resolveFilePath(QStringLiteral("/styles/org.kde.desktop.plasma")))) {
             m_stylesFallbackChain.prepend("org.kde.desktop.plasma");
         }
     } else {
+#if !defined(Q_OS_ANDROID) && !defined(Q_OS_IOS)
         m_stylesFallbackChain.prepend(QStringLiteral("org.kde.desktop"));
+#endif
     }
     //At this point the fallback chain will be selected->org.kde.desktop->Fallback
-
     s_selectedStyle = m_stylesFallbackChain.first();
 
     qmlRegisterSingletonType<Settings>(uri, 2, 0, "Settings",
