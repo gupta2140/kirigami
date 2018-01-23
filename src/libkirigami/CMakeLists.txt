@@ -26,7 +26,11 @@ add_library(KF5::Kirigami2 ALIAS KF5Kirigami2)
 target_include_directories(KF5Kirigami2
     INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/Kirigami2>"
 )
-#FIXME: no dbus on android
+
+if (NOT CMAKE_SYSTEM_NAME STREQUAL "Android")
+    set(LIBKIRIGAMKI_EXTRA_LIBS Qt5::DBus)
+endif()
+
 target_link_libraries(KF5Kirigami2
     PUBLIC
         Qt5::Core
@@ -34,7 +38,7 @@ target_link_libraries(KF5Kirigami2
         Qt5::Qml
         Qt5::Quick
         Qt5::QuickControls2
-        Qt5::DBus
+        ${LIBKIRIGAMKI_EXTRA_LIBS}
 )
 
 set_target_properties(KF5Kirigami2 PROPERTIES

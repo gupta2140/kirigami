@@ -22,7 +22,9 @@
 #include "tabletmodewatcher.h"
 #include "tabletmodemanager_interface.h"
 
+#ifdef Q_OS_ANDROID
 #include <QDBusConnection>
+#endif
 
 //TODO: All the dbus stuff should be conditional, optional win32 support
 
@@ -43,24 +45,30 @@ public:
     TabletModeWatcherPrivate(TabletModeWatcher *watcher)
         : q(watcher)
     {
+#ifndef Q_OS_ANDROID
         m_interface = new OrgKdeKWinTabletModeManagerInterface(QStringLiteral("org.kde.KWin"), QStringLiteral("/org/kde/KWin"), QDBusConnection::sessionBus(), q);
 
         if (m_interface->isValid()) {
-        //NOTE: the initial call is actually sync, because is better a tiny freeze than having the ui always recalculated and changed at the start
-        isTabletMode = m_interface->tabletMode();
-        QObject::connect(m_interface, &OrgKdeKWinTabletModeManagerInterface::tabletModeChanged,
-                q, [this](bool tabletMode) {
-            setIsTablet(tabletMode);
-        });
+            //NOTE: the initial call is actually sync, because is better a tiny freeze than having the ui always recalculated and changed at the start
+            isTabletMode = m_interface->tabletMode();
+            QObject::connect(m_interface, &OrgKdeKWinTabletModeManagerInterface::tabletModeChanged,
+                    q, [this](bool tabletMode) {
+                setIsTablet(tabletMode);
+            });
         } else {
             isTabletMode = false;
         }
+#else
+        isTabletMode = true;
+#endif
     }
     ~TabletModeWatcherPrivate() {};
     void setIsTablet(bool tablet);
 
     TabletModeWatcher *q;
+#ifndef Q_OS_ANDROID
     OrgKdeKWinTabletModeManagerInterface *m_interface;
+#endif
     bool isTabletMode = false;
 };
 
