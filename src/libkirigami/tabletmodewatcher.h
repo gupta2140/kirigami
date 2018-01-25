@@ -32,6 +32,14 @@ namespace Kirigami {
 
 class TabletModeWatcherPrivate;
 
+/**
+ * This class reports on the status of certain transformable
+ * devices which can be both tablets and laptops at the same time,
+ * with a detachable keyboard.
+ * It reports whether the device supports a tablet mode and if
+ * the device is currently in such mode or not, emitting a signal
+ * when the user switches.
+ */
 #ifdef KIRIGAMI_BUILD_TYPE_STATIC
 class TabletModeWatcher : public QObject
 #else
@@ -39,15 +47,27 @@ class KIRIGAMI2_EXPORT TabletModeWatcher : public QObject
 #endif
 {
     Q_OBJECT
-    Q_PROPERTY(bool tabletMode READ isTablet NOTIFY tabletModeChanged)
+    Q_PROPERTY(bool tabletModeAvailable READ isTabletModeAvailable NOTIFY tabletModeAvailableChanged)
+    Q_PROPERTY(bool tabletMode READ isTabletMode NOTIFY tabletModeChanged)
 
 public:
     ~TabletModeWatcher();
     static TabletModeWatcher *self();
 
-    bool isTablet() const;
+    /**
+     * @returns true if the device supports a tablet mode and has a switch
+     * to report when the device has been transformed
+     */
+    bool isTabletModeAvailable() const;
+
+    /**
+     * @returns true if the machine is now in tablet mode, such as the
+     * laptop keyboard flipped away or detached
+     */
+    bool isTabletMode() const;
 
 Q_SIGNALS:
+    void tabletModeAvailableChanged(bool tabletModeAvailable);
     void tabletModeChanged(bool tabletMode);
 
 private:

@@ -36,7 +36,7 @@ Settings::Settings(QObject *parent)
     m_mobile = (QString::fromLatin1(qgetenv("QT_QUICK_CONTROLS_MOBILE")) == QStringLiteral("1") ||
          QString::fromLatin1(qgetenv("QT_QUICK_CONTROLS_MOBILE")) == QStringLiteral("true"));
     } else {
-        m_mobile = Kirigami::TabletModeWatcher::self()->isTablet();
+        m_mobile = Kirigami::TabletModeWatcher::self()->isTabletMode();
         connect(Kirigami::TabletModeWatcher::self(), &Kirigami::TabletModeWatcher::tabletModeChanged,
                 this, [this](bool tabletMode) {
                     setIsMobile(tabletMode);

@@ -50,15 +50,23 @@ public:
 
         if (m_interface->isValid()) {
             //NOTE: the initial call is actually sync, because is better a tiny freeze than having the ui always recalculated and changed at the start
+            isTabletModeAvailable = m_interface->tabletModeAvailable();
             isTabletMode = m_interface->tabletMode();
             QObject::connect(m_interface, &OrgKdeKWinTabletModeManagerInterface::tabletModeChanged,
                     q, [this](bool tabletMode) {
                 setIsTablet(tabletMode);
             });
+            QObject::connect(m_interface, &OrgKdeKWinTabletModeManagerInterface::tabletModeAvailableChanged,
+                    q, [this](bool avail) {
+                 isTabletModeAvailable = avail;
+                 emit q->tabletModeAvailableChanged(avail);
+            });
         } else {
+            isTabletModeAvailable = false;
             isTabletMode = false;
         }
 #else
+        isTabletModeAvailable = true;
         isTabletMode = true;
 #endif
     }
@@ -69,6 +77,7 @@ public:
 #ifndef Q_OS_ANDROID
     OrgKdeKWinTabletModeManagerInterface *m_interface;
 #endif
+    bool isTabletModeAvailable = false;
     bool isTabletMode = false;
 };
 
@@ -100,7 +109,12 @@ TabletModeWatcher *TabletModeWatcher::self()
     return &privateTabletModeWatcherSelf()->self;
 }
 
-bool TabletModeWatcher::isTablet() const
+bool TabletModeWatcher::isTabletModeAvailable() const
+{
+    return d->isTabletModeAvailable;
+}
+
+bool TabletModeWatcher::isTabletMode() const
 {
     return d->isTabletMode;
 }
