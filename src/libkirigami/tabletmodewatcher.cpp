@@ -52,24 +52,32 @@ public:
         isTabletModeAvailable = false;
         isTabletMode = false;
 #elif defined(Q_OS_LINUX) || defined(Q_OS_UNIX)
-        m_interface = new OrgKdeKWinTabletModeManagerInterface(QStringLiteral("org.kde.KWin"), QStringLiteral("/org/kde/KWin"), QDBusConnection::sessionBus(), q);
-
-        if (m_interface->isValid()) {
-            //NOTE: the initial call is actually sync, because is better a tiny freeze than having the ui always recalculated and changed at the start
-            isTabletModeAvailable = m_interface->tabletModeAvailable();
-            isTabletMode = m_interface->tabletMode();
-            QObject::connect(m_interface, &OrgKdeKWinTabletModeManagerInterface::tabletModeChanged,
-                    q, [this](bool tabletMode) {
-                setIsTablet(tabletMode);
-            });
-            QObject::connect(m_interface, &OrgKdeKWinTabletModeManagerInterface::tabletModeAvailableChanged,
-                    q, [this](bool avail) {
-                 isTabletModeAvailable = avail;
-                 emit q->tabletModeAvailableChanged(avail);
-            });
+        //Mostly for debug purposes and for platforms which are always mobile,
+        //such as Plasma Mobile
+        if (qEnvironmentVariableIsSet("QT_QUICK_CONTROLS_MOBILE")) {
+            isTabletMode = (QString::fromLatin1(qgetenv("QT_QUICK_CONTROLS_MOBILE")) == QStringLiteral("1") ||
+                QString::fromLatin1(qgetenv("QT_QUICK_CONTROLS_MOBILE")) == QStringLiteral("true"));
+            isTabletModeAvailable = isTabletMode;
         } else {
-            isTabletModeAvailable = false;
-            isTabletMode = false;
+            m_interface = new OrgKdeKWinTabletModeManagerInterface(QStringLiteral("org.kde.KWin"), QStringLiteral("/org/kde/KWin"), QDBusConnection::sessionBus(), q);
+
+            if (m_interface->isValid()) {
+                //NOTE: the initial call is actually sync, because is better a tiny freeze than having the ui always recalculated and changed at the start
+                isTabletModeAvailable = m_interface->tabletModeAvailable();
+                isTabletMode = m_interface->tabletMode();
+                QObject::connect(m_interface, &OrgKdeKWinTabletModeManagerInterface::tabletModeChanged,
+                        q, [this](bool tabletMode) {
+                    setIsTablet(tabletMode);
+                });
+                QObject::connect(m_interface, &OrgKdeKWinTabletModeManagerInterface::tabletModeAvailableChanged,
+                        q, [this](bool avail) {
+                    isTabletModeAvailable = avail;
+                    emit q->tabletModeAvailableChanged(avail);
+                });
+            } else {
+                isTabletModeAvailable = false;
+                isTabletMode = false;
+            }
         }
 //TODO: case for Windows
 #else
@@ -81,8 +89,8 @@ public:
     void setIsTablet(bool tablet);
 
     TabletModeWatcher *q;
-#ifndef Q_OS_ANDROID
-    OrgKdeKWinTabletModeManagerInterface *m_interface;
+#if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && !defined(Q_OS_ANDROID)
+    OrgKdeKWinTabletModeManagerInterface *m_interface = nullptr;
 #endif
     bool isTabletModeAvailable = false;
     bool isTabletMode = false;
