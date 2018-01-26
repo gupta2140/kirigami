@@ -29,6 +29,12 @@
 Settings::Settings(QObject *parent)
     : QObject(parent)
 {
+    m_mobileAvailable = Kirigami::TabletModeWatcher::self()->isTabletModeAvailable();
+    connect(Kirigami::TabletModeWatcher::self(), &Kirigami::TabletModeWatcher::tabletModeAvailableChanged,
+            this, [this](bool tabletModeAvailable) {
+                setIsMobileAvailable(tabletModeAvailable);
+            });
+
     m_mobile = Kirigami::TabletModeWatcher::self()->isTabletMode();
     connect(Kirigami::TabletModeWatcher::self(), &Kirigami::TabletModeWatcher::tabletModeChanged,
             this, [this](bool tabletMode) {
@@ -48,6 +54,21 @@ Settings::Settings(QObject *parent)
 
 Settings::~Settings()
 {
+}
+
+void Settings::setIsMobileAvailable(bool mobileAvailable)
+{
+    if (mobileAvailable == m_mobileAvailable) {
+        return;
+    }
+
+    m_mobileAvailable = mobileAvailable;
+    emit isMobileAvailableChanged();
+}
+
+bool Settings::isMobileAvailable() const
+{
+    return m_mobileAvailable;
 }
 
 void Settings::setIsMobile(bool mobile)

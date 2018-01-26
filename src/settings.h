@@ -25,6 +25,7 @@ class Settings : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool isMobileAvailable READ isMobileAvailable NOTIFY isMobileAvailableChanged)
     Q_PROPERTY(bool isMobile READ isMobile NOTIFY isMobileChanged)
     Q_PROPERTY(QString style READ style CONSTANT)
     //TODO: make this adapt without file watchers?
@@ -33,6 +34,9 @@ class Settings : public QObject
 public:
     Settings(QObject *parent=0);
     ~Settings();
+
+    void setIsMobileAvailable(bool mobile);
+    bool isMobileAvailable() const;
 
     void setIsMobile(bool mobile);
     bool isMobile() const;
@@ -43,11 +47,13 @@ public:
     int mouseWheelScrollLines() const;
 
 Q_SIGNALS:
+    void isMobileAvailableChanged();
     void isMobileChanged();
 
 private:
     QString m_style;
     int m_scrollLines = 0;
+    bool m_mobileAvailable : 1;
     bool m_mobile : 1;
 };
 
