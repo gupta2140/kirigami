@@ -45,7 +45,13 @@ public:
     TabletModeWatcherPrivate(TabletModeWatcher *watcher)
         : q(watcher)
     {
-#ifndef Q_OS_ANDROID
+#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
+        isTabletModeAvailable = true;
+        isTabletMode = true;
+#elif defined(Q_OS_MACOS)
+        isTabletModeAvailable = false;
+        isTabletMode = false;
+#elif defined(Q_OS_LINUX) || defined(Q_OS_UNIX)
         m_interface = new OrgKdeKWinTabletModeManagerInterface(QStringLiteral("org.kde.KWin"), QStringLiteral("/org/kde/KWin"), QDBusConnection::sessionBus(), q);
 
         if (m_interface->isValid()) {
@@ -65,9 +71,10 @@ public:
             isTabletModeAvailable = false;
             isTabletMode = false;
         }
+//TODO: case for Windows
 #else
-        isTabletModeAvailable = true;
-        isTabletMode = true;
+        isTabletModeAvailable = false;
+        isTabletMode = false;
 #endif
     }
     ~TabletModeWatcherPrivate() {};

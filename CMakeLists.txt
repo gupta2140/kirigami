@@ -99,8 +99,8 @@ ecm_setup_version(${KF5_VERSION}
     SOVERSION 5
 )
 
-#TODO: use dbus only in Linux and not android (exclude ios and windows as well)
-if(NOT CMAKE_SYSTEM_NAME STREQUAL "Android")
+#use dbus on linux, bsd etc, but not andoid and apple stuff
+if (UNIX AND NOT CMAKE_SYSTEM_NAME STREQUAL "Android" AND NOT(APPLE))
     find_package(Qt5DBus)
 endif()
 

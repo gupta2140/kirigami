@@ -27,9 +27,11 @@ target_include_directories(KF5Kirigami2
     INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/Kirigami2>"
 )
 
-if (NOT CMAKE_SYSTEM_NAME STREQUAL "Android")
+#use dbus on linux, bsd etc, but not andoid and apple stuff
+if (UNIX AND NOT CMAKE_SYSTEM_NAME STREQUAL "Android" AND NOT(APPLE))
     set(LIBKIRIGAMKI_EXTRA_LIBS Qt5::DBus)
 endif()
+
 
 target_link_libraries(KF5Kirigami2
     PUBLIC
