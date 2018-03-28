@@ -124,7 +124,8 @@ T2.Drawer {
         }
 
         anchors {
-            bottom: parent.bottom
+            top: parent.top
+            //bottom: parent.bottom
             bottomMargin: {
                 if (!applicationWindow()) {
                     return;

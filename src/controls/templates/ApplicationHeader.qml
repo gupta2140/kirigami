@@ -151,6 +151,10 @@ AbstractApplicationHeader {
             top: parent.top
             bottom: parent.bottom
         }
+        Item {
+            Layout.minimumWidth:30
+            Layout.fillHeight:true
+        }
     }
 
     ListView {

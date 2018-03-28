@@ -44,6 +44,7 @@ T.OverlayDrawer {
             anchors.fill: parent
 
             DropShadow {
+                visible: root.handle.pressed || root.position > 0
                 anchors.fill: handleGraphics
                 horizontalOffset: 0
                 verticalOffset: Units.devicePixelRatio
@@ -96,8 +97,8 @@ T.OverlayDrawer {
 
     focus: false
     //default to a sidebar in desktop mode
-    modal: (applicationWindow() && applicationWindow().width < width*2) || edge == Qt.TopEdge || edge == Qt.BottomEdge
-    drawerOpen: true
+    modal: true//(applicationWindow() && applicationWindow().width < width*2) || edge == Qt.TopEdge || edge == Qt.BottomEdge
+    drawerOpen: !modal
     closePolicy: modal ? Popup.CloseOnEscape | Popup.CloseOnPressOutside : Popup.NoAutoClose
     handleVisible: modal || !drawerOpen
     onPositionChanged: {
