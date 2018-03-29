@@ -21,7 +21,7 @@ import QtQuick 2.5
 import QtQuick.Controls 2.0 as QQC2
 import QtQuick.Layouts 1.2
 import "private"
-import org.kde.kirigami 2.2
+import org.kde.kirigami 2.4
 
 
 /**
@@ -164,7 +164,7 @@ AbstractApplicationHeader {
         }
         Item {
             height: parent.height
-            width: __appWindow.globalDrawer && __appWindow.globalDrawer.handleVisible && __appWindow.globalDrawer.modal && __appWindow.globalDrawer.handle && __appWindow.globalDrawer.handle.y == 0 ? __appWindow.globalDrawer.handle.width : 0
+            width: __appWindow.globalDrawer && __appWindow.globalDrawer.handleVisible && __appWindow.globalDrawer.handle && __appWindow.globalDrawer.handle.y == 0 ? __appWindow.globalDrawer.handle.width : 0
         }
     }
 
@@ -199,7 +199,7 @@ AbstractApplicationHeader {
             listScrollAnim.running = false
             var pos = titleList.contentX;
             var destPos;
-            titleList.contentX = contentItem.children[idx].x;
+            titleList.contentX = Math.max((contentItem.children[idx].x + contentItem.children[idx].width) - titleList.width, Math.min(titleList.contentX, contentItem.children[idx].x));
             destPos = titleList.contentX;
             listScrollAnim.from = pos;
             listScrollAnim.to = destPos;
