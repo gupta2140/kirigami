@@ -38,15 +38,16 @@ Item {
             margins: Units.smallSpacing
         }
         property int thickness: Math.floor(Units.devicePixelRatio)*2
+
         Rectangle {
             anchors {
                 right: parent.right
                 top: parent.top
-                rightMargin: canvas.width/4 * morph
+                topMargin: -iconRoot.thickness/2 * morph
             }
             antialiasing: true
             transformOrigin: Item.Right
-            width: (1 - morph) * parent.width + morph * ((parent.width / Math.sqrt(2)) - height/2)
+            width: (1 - morph) * parent.width + morph * (Math.sqrt(2*(parent.width*parent.width)))
             height: iconRoot.thickness
             color: canvas.color
             rotation: -45 * morph
@@ -63,11 +64,11 @@ Item {
             anchors {
                 right: parent.right
                 bottom: parent.bottom
-                rightMargin: canvas.width/4 * morph
+                bottomMargin: -iconRoot.thickness/2 * morph
             }
             antialiasing: true
             transformOrigin: Item.Right
-            width: (1 - morph) * parent.width + morph * ((parent.width / Math.sqrt(2)) - height/2)
+            width: (1 - morph) * parent.width + morph * (Math.sqrt(2*(parent.width*parent.width)))
             height: iconRoot.thickness
             color: canvas.color
             rotation: 45 * morph
