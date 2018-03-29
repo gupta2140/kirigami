@@ -42,11 +42,12 @@ Item {
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 top: parent.top
-                leftMargin: canvas.width/4 * morph
+                //horizontalCenterOffset: -parent.width/2
+                topMargin: (parent.height/2 - iconRoot.thickness/2) * morph
             }
             antialiasing: true
-            transformOrigin: Item.Left
-            width: (1 - morph) * height + morph * ((parent.width / Math.sqrt(2)) - height/2)
+            transformOrigin: Item.Center
+            width: (1 - morph) * height + morph * (Math.sqrt(2*(parent.width*parent.width)))
             height: iconRoot.thickness
             color: canvas.color
             rotation: 45 * morph
@@ -54,8 +55,8 @@ Item {
 
         Rectangle {
             anchors.centerIn: parent
-            width: height * (1 - morph)
-            height: iconRoot.thickness * (1-morph)
+            width: height
+            height: iconRoot.thickness
             color: canvas.color
         }
 
@@ -64,11 +65,12 @@ Item {
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 bottom: parent.bottom
-                leftMargin: canvas.width/4 * morph
+             //   topMargin: -iconRoot.thickness/2 * morph
+                bottomMargin: (parent.height/2 - iconRoot.thickness/2) * morph
             }
             antialiasing: true
-            transformOrigin: Item.Left
-            width: (1 - morph) * height + morph * ((parent.width / Math.sqrt(2)) - height/2)
+            transformOrigin: Item.Center
+            width: (1 - morph) * height + morph * (Math.sqrt(2*(parent.width*parent.width)))
             height: iconRoot.thickness
             color: canvas.color
             rotation: -45 * morph
