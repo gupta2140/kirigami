@@ -152,16 +152,18 @@ AbstractApplicationHeader {
         }
     }
 
-    RowLayout {
+    Row {
         id: navButtons
         anchors {
             left: parent.left
             top: parent.top
             bottom: parent.bottom
+            topMargin: Units.smallSpacing
+            bottomMargin: Units.smallSpacing
         }
         Item {
-            Layout.minimumWidth:height
-            Layout.fillHeight:true
+            height: parent.height
+            width: height
         }
     }
 
