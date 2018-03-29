@@ -163,7 +163,7 @@ AbstractApplicationHeader {
         }
         Item {
             height: parent.height
-            width: height
+            width: __appWindow.globalDrawer.handle.width
         }
     }
 
