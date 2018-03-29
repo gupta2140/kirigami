@@ -130,6 +130,7 @@ AbstractApplicationHeader {
         anchors {
             fill: parent
             leftMargin: navButtons.width
+            rightMargin: __appWindow.contextDrawer && __appWindow.contextDrawer.handleVisible && __appWindow.contextDrawer.handle && __appWindow.contextDrawer.handle.y == 0 ? __appWindow.contextDrawer.handle.width : 0
         }
         initialItem: titleList
     }
@@ -267,11 +268,12 @@ AbstractApplicationHeader {
                     width: {
                         //more columns shown?
                         if (titleList.scrollingLocked && delegateLoader.page) {
-                            return delegateLoader.page.width - (index == 0 ? navButtons.width : 0);
+                            return delegateLoader.page.width - (index == 0 ? navButtons.width : 0) - (index == __appWindow.pageStack.depth-1  ? stack.anchors.rightMargin : 0);
                         } else {
                             return Math.min(titleList.width, delegateLoader.implicitWidth + Units.smallSpacing);
                         }
                     }
+
                     height: titleList.height
                     onClicked: {
                         if (__appWindow.pageStack.currentIndex == modelData) {
