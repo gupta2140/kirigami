@@ -78,6 +78,7 @@ T2.Drawer {
         id: drawerHandle
         z: root.modal ? applicationWindow().overlay.z + (root.position > 0 ? +1 : -1) : root.background.parent.z + 1
         preventStealing: true
+        hoverEnabled: desktopMode
         parent: applicationWindow().overlay.parent
 
         property int startX
@@ -91,6 +92,9 @@ T2.Drawer {
             mappedStartX = mapToItem(parent, startX, 0).x
         }
         onPositionChanged: {
+            if (!pressed) {
+                return;
+            }
             var pos = mapToItem(parent, mouse.x - startX, mouse.y);
             switch(root.edge) {
             case Qt.LeftEdge:

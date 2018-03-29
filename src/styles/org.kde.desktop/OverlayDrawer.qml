@@ -60,6 +60,7 @@ T.OverlayDrawer {
                 width: Units.iconSizes.smallMedium + Units.smallSpacing * 2
                 height: width
                 radius: Units.devicePixelRatio*2
+                border.color: parent.parent.desktopMode && parent.parent.containsMouse ? Theme.highlightColor : "transparent"
                 Loader {
                     anchors.centerIn: parent
                     width: height

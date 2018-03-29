@@ -136,6 +136,7 @@ AbstractApplicationHeader {
     Separator {
         id: separator
         height: parent.height * 0.6
+        visible: navButtons.width > 0
         anchors {
             verticalCenter: parent.verticalCenter
             left: navButtons.right
@@ -163,7 +164,7 @@ AbstractApplicationHeader {
         }
         Item {
             height: parent.height
-            width: __appWindow.globalDrawer.handle.width
+            width: __appWindow.globalDrawer && __appWindow.globalDrawer.handleVisible && __appWindow.globalDrawer.modal && __appWindow.globalDrawer.handle && __appWindow.globalDrawer.handle.y == 0 ? __appWindow.globalDrawer.handle.width : 0
         }
     }
 
