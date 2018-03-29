@@ -82,6 +82,9 @@ T2.Drawer {
 
         property int startX
         property int mappedStartX
+
+        property bool desktopMode: applicationWindow() && applicationWindow().header.toString().indexOf("ToolBarApplicationHeader") !== -1
+
         onPressed: {
             root.peeking = true;
             startX = mouse.x;
@@ -124,8 +127,10 @@ T2.Drawer {
         }
 
         anchors {
-            top: parent.top
-            //bottom: parent.bottom
+            top: drawerHandle.desktopMode ? parent.top : undefined
+
+            bottom: drawerHandle.desktopMode ? undefined : parent.bottom
+
             bottomMargin: {
                 if (!applicationWindow()) {
                     return;

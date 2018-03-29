@@ -44,7 +44,7 @@ T.OverlayDrawer {
             anchors.fill: parent
 
             DropShadow {
-                visible: root.handle.pressed || root.position > 0
+                visible: !parent.parent.desktopMode || root.handle.pressed || root.position > 0
                 anchors.fill: handleGraphics
                 horizontalOffset: 0
                 verticalOffset: Units.devicePixelRatio
